@@ -301,7 +301,7 @@ for i in range(10):
 
 #----------------------------- Part 4: VPython -----------------------------------------------------------------------------------------------------------------------------------------------------------
 # Create an animation for the launched rocket reaching the ISS 
-scene1 = vis.display (title = 'Animation of Launched Rocket to the ISS: MaxFuel')
+scene1 = vis.display (title = 'Animation of Launched Rocket to the ISS')
 
 # create three objects: Earth, the International Space Station, and the rocket.
 Earth = vis.sphere(pos=[0,-250,0], radius = 50, color=vis.color.green)
