@@ -46,16 +46,16 @@ def Acc(t):
 
 
 # set initial conditions
-a = 0.0							# starting time point
-b = 350.0							# ending time point; change to appropriate time as fit
-N = 10000						# number of steps
-h = (b-a)/float(N)					# width of each step interval of time
-t_points= np.arange(a, b, h)			# create array of t_points
-height = 0.0						# initial height, velocity, and time = 0
+a = 0.0								# starting time point
+b = 350.0								# ending time point; change to appropriate time as fit
+N = 10000							# number of steps
+h = (b-a)/float(N)						# width of each step interval of time
+t_points= np.arange(a, b, h)				# create array of t_points
+height = 0.0							# initial height, velocity, and time = 0
 velocity = 0.0
 t_i= 0.0
 velocity = velocity - 0.5*h*Acc(t_i)		# set the velocity half step back for the leap frog method
-velocity_points = []				# set up empty lists for velocity points and height points
+velocity_points = []					# set up empty lists for velocity points and height points
 height_points = []
 
 for t in t_points:								# for each time point in t_points
@@ -93,7 +93,7 @@ pl.show()
 # Remodel the launch taking the force of gravity of the earth into account.
 # Net force is the force of thrust + force of gravity
 # F_net = F_thrust + F_gravity, where
-# F_thrust = (m_0 - burn_rate*t)*(burn_rate * v_exhaust)
+# F_thrust = burn_rate * v_exhaust
 # F_gravity = mass * gravity = (m_0 - burn_rate*t)*(gravity_earth / (1 + height/radius_earth)**2)
 # Again, note that the mass is not the initial mass, but it is changing (lost burn_rate * t kg of mass for time t), but only while there is fuel to burn.
 # When there is no fuel being used, mass stays constant.
@@ -102,7 +102,6 @@ pl.show()
 # When there is fuel burning, the acceleration is dependent on three factors--the force of thrust, the force of gravity, and the changing mass of the velocity.
 def Acc_G1(t, h):
     return (burn_rate * v_exhaust /(m_0 - burn_rate*t) - (gravity_earth / (1 + h/radius_earth) ** 2) )
-
 
 # However, when there is no fuel, the only force on the rocket is the force of gravity (and the mass is now constant).
 def Acc_G2(t, h):
@@ -152,34 +151,37 @@ pl.show()
 #----------------------------- Part 3: Air Resistance-----------------------------------------------------------------------------------------------------------------------------------------------------------
 # Now taking air resistance into account, remodel the trajectory path of the rocket.
 # F_total = F_thrust + F_gravity + F_air, where
-# F_thrust = (m_0 - burn_rate*t)*(burn_rate * v_exhaust)
+# F_thrust = burn_rate * v_exhaust
 # F_gravity = mass * gravity = (m_0 - burn_rate*t)*(gravity_earth / (1 + height/radius_earth)**2)
 # F_air = (0.5 * pressure * molar_mass * area_reference * drag_coefficient * (velocity ** 2.0) / (ideal_Gas * temperature))
 # Adding F_Air Resistance is more complicated than adding F_gravity because there are two dynamic variables that depends on each other.
 # Again, note that the mass is not the initial mass, but it is changing (lost burn_rate * t kg of mass for time t), but only while there is fuel to burn.
 
-#
+# Define functions (Temp, Grav, Press, and Air_Resistance) to use in calculating air resistance.
 def Temp(height):                                       		# Temperature changes based on the height
-    if temp_sea - (temp_lapse * height) > 0:
+    if temp_sea - (temp_lapse * height) > 0:		# Temperature cannot be negative	
         return temp_sea - (temp_lapse * height)
     else:
     	return 0
-    
+
 def Grav(height):                                      		 # Gravity also changes based on the height as mentioned in previous part
     return gravity_earth / (1.0 + height/radius_earth) ** 2.0
     
-def Press(temp,g):                                         # Pressure changes based the temperature and gravity
-    if temp > 0:
+def Press(temp,g):                                         		# Pressure changes based the temperature and gravity
+    if temp > 0:								# Pressure = 0 if temperature =0
         return press_sea * (temp / temp_sea) ** (g * molar_mass/(ideal_gas * temp_lapse))
     else:
         return 0
     
-def Air_Resistance(press, temp):                                # Air Resistance changes based on pressure and temperature
-    if temp > 0:
+def Air_Resistance(press, temp): 				# Air Resistance changes based on pressure and temperature
+    if temp > 0:								# Air_Resistance is only defined if temp is larger than 0. Or else there is no air resistance.
         return -0.5 * press * molar_mass * area_reference * drag_coefficient * (velocity ** 2.0) / (ideal_gas * temp)
     else:
     	return 0
 
+
+# Define functions of acceleration.
+# Like in Part 2, we need two acceleration functions to represent the acceleration when the fuel is burning and when there is no more fuel to burn.
 def Acc_A1(t):
     return (burn_rate * v_exhaust - (m_0 - burn_rate * t) * gravity_earth / (1.0 + height/radius_earth) ** 2.0 + air_resis) / (m_0 - burn_rate*t)
 
