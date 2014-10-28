@@ -37,7 +37,7 @@ ideal_gas = 8.314										# ideal gas constant (Joules/(Kelvin*mole))
 #----------------------------- Part 1: Rocket Thrust-----------------------------------------------------------------------------------------------------------------------------------------------------------
 # First define the acceleration function that is dependent on time t.
 # Force on rocket is only thrust of the exhaust.
-# F_net = mass * acceleration = (m_0 - burn_rate*t)*(burn_rate * v_exhaust)
+# F_net = mass * acceleration = (burn_rate * v_exhaust)
 # Note that the mass is not the initial mass, but it is changing (lost burn_rate * t kg of mass for time t), but only while there is fuel to burn.
 # When there is no fuel being used, mass stays constant.
 def Acc(t):
