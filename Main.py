@@ -23,7 +23,7 @@ v_exhaust = 7000.0									# exhaust velocity
 burn_rate = 100.0										# burn rate of the fuel (kg/s)
 radius_earth = 6.37 * 10 ** 6								# radius of earth in meters
 gravity_earth = 9.81									# gravity near earth (m/s**2)
-area_reference = 10.0
+area_reference = 10.0									# reference area of rocket (m**2)
 drag_coefficient = 0.5
 temp_lapse = 0.0065									# temperature lapse rate; (Kelvin per meter)
 temp_sea = 288.0										# in Kelvin
@@ -40,7 +40,6 @@ ideal_gas = 8.314										# ideal gas constant (Joules/(Kelvin*mole))
 # F_net = mass * acceleration = (m_0 - burn_rate*t)*(burn_rate * v_exhaust)
 # Note that the mass is not the initial mass, but it is changing (lost burn_rate * t kg of mass for time t), but only while there is fuel to burn.
 # When there is no fuel being used, mass stays constant.
-
 def Acc(t):
     return burn_rate * v_exhaust /(m_0 - burn_rate*t)
 
@@ -76,12 +75,16 @@ for t in t_points:								# for each time point in t_points
 pl.figure(1)
 pl.plot(t_points, height_points, label = 'height')
 pl.title('[Thrust] Height vs. Time of Rocket')
+pl.xlabel('Time (s)')
+pl.ylabel('Height (m)')
 pl.legend(loc=2)
 pl.show()
 
 # plot graph of velocity vs. time
 pl.figure(2)
 pl.plot(t_points, velocity_points, label = 'velocity')
+pl.xlabel('Time (s)')
+pl.ylabel('Height (m)')
 pl.title('[Thrust] Velocity vs. Time of Rocket')
 pl.legend(loc=2)
 pl.show()
@@ -135,6 +138,8 @@ for t in t_points:									# for each time point in t_points
 pl.figure(3)
 pl.plot(t_points, height_points, label = 'height')
 pl.title('[Thrust + Gravity] Height vs. Time of Rocket')
+pl.xlabel('Time (s)')
+pl.ylabel('Height (m)')
 pl.legend(loc=2)
 pl.show()
 
@@ -142,6 +147,8 @@ pl.show()
 pl.figure(4)
 pl.plot(t_points, velocity_points, label = 'velocity')
 pl.title('[Thrust + Gravity] Velocity vs. Time of Rocket')
+pl.xlabel('Time (s)')
+pl.ylabel('Height (m)')
 pl.legend(loc=2)
 pl.show()
 
@@ -231,6 +238,8 @@ pl.figure(5)
 pl.plot(t_points, height_points, label = 'height')
 pl.legend(loc=2)
 pl.title('[Thrust + Gravity + Air Resistance] Height vs. Time of Rocket')
+pl.xlabel('Time (s)')
+pl.ylabel('Height (m)')
 pl.show()
 
 # plot graph of velocity vs. time
@@ -238,6 +247,8 @@ pl.figure(6)
 pl.plot(t_points, velocity_points, label = 'velocity')
 pl.legend(loc=1)
 pl.title('[Thrust + Gravity + Air Resistance] Velocity vs. Time of Rocket')
+pl.xlabel('Time (s)')
+pl.ylabel('Height (m)')
 pl.show()
 
 # print the max height
