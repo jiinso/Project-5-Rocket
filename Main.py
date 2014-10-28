@@ -14,9 +14,9 @@ import visual as vis
 # units are in S.I. units.
 height_ISS = 355000.0									# height of the International Space Station
 mass_empty = 10000.0									# mass of the empty rocket
-mass_fuel = 5000.0										# mass of fuel (maximum amount = 10000)
-#mass_payload = 0.0									# mass of payload (set 0.0; no cargo at this point)
-mass_payload = 4474.51590745							# maximum payload (with max. fuel)
+mass_fuel = 10000.0										# mass of fuel (maximum amount = 10000)
+mass_payload = 0.0									# mass of payload (set 0.0; no cargo at this point)
+#mass_payload = 4474.51590745							# maximum payload (with max. fuel)
 m_0 = mass_empty + mass_fuel+ mass_payload				# initial mass before launch
 m_1 = mass_empty +mass_payload
 v_exhaust = 7000.0									# exhaust velocity
@@ -46,7 +46,7 @@ def Acc(t):
 
 # set initial conditions
 a = 0.0								# starting time point
-b = 250.0								# ending time point; change to appropriate time as fit
+b = 350.0								# ending time point; change to appropriate time as fit
 N = 10000							# number of steps
 h = (b-a)/float(N)						# width of each step interval of time
 t_points= np.arange(a, b, h)				# create array of t_points
@@ -56,7 +56,7 @@ t_i= 0.0
 velocity = velocity - 0.5*h*Acc(t_i)		# set the velocity half step back for the leap frog method
 velocity_points = []					# set up empty lists for velocity points and height points
 height_points = []
-'''
+
 for t in t_points:								# for each time point in t_points
     if t <= 100.0:								# if t is smaller than 100 s (if the fuel is not used up), use the leap frog method to find the next points of velocity and height
         height_points.append(height)	
@@ -78,7 +78,7 @@ pl.title('[Thrust] Height vs. Time of Rocket')
 pl.xlabel('Time (s)')
 pl.ylabel('Height (m)')
 pl.legend(loc=2)
-pl.show()
+#pl.show()
 
 # plot graph of velocity vs. time
 pl.figure(2)
@@ -87,10 +87,11 @@ pl.xlabel('Time (s)')
 pl.ylabel('Velocity (m/s)')
 pl.title('[Thrust] Velocity vs. Time of Rocket')
 pl.legend(loc=2)
-pl.show()
-'''
+#pl.show()
 
-'''
+
+
+
 #----------------------------- Part 2: Gravity -----------------------------------------------------------------------------------------------------------------------------------------------------------
 # Remodel the launch taking the force of gravity of the earth into account.
 # Net force is the force of thrust + force of gravity
@@ -140,7 +141,7 @@ pl.title('[Thrust + Gravity] Height vs. Time of Rocket')
 pl.xlabel('Time (s)')
 pl.ylabel('Height (m)')
 pl.legend(loc=2)
-pl.show()
+#pl.show()
 
 # plot graph of velocity vs. time
 pl.figure(4)
@@ -149,10 +150,11 @@ pl.title('[Thrust + Gravity] Velocity vs. Time of Rocket')
 pl.xlabel('Time (s)')
 pl.ylabel('Velocity (m/s)')
 pl.legend(loc=2)
-pl.show()
+#pl.show()
 
 
-'''
+
+
 
 #----------------------------- Part 3: Air Resistance-----------------------------------------------------------------------------------------------------------------------------------------------------------
 # Now taking air resistance into account, remodel the trajectory path of the rocket.
@@ -210,7 +212,7 @@ height_points = []
 
 
 for t in t_points:							# for each time point in t_points
-    if t <= 50.0:								# if t is smaller than 100 s (if the fuel is not used up), use the leap frog method to find the next points of velocity and height
+    if t <= 100.0:								# if t is smaller than 100 s (if the fuel is not used up), use the leap frog method to find the next points of velocity and height
         height_points.append(height)
         velocity_sync = velocity + 0.5*h*Acc_A1(t)	# velocity is half-step off, so to plot the correct velocity for the correct times we need to append the synced velocity
         velocity_points.append(velocity_sync)
@@ -230,28 +232,29 @@ for t in t_points:							# for each time point in t_points
         g = Grav(height)
         press = Press(temp,g)
         air_resis = Air_Resistance(press, temp)
-        
 
-# plot graph of height vs. time
+# print the max height
+print np.max(height_points)
+
+
+#plot graph of height vs. time
 pl.figure(5)
 pl.plot(t_points, height_points, label = 'height')
 pl.legend(loc=2)
 pl.title('[Thrust + Gravity + Air Resistance] Height vs. Time of Rocket')
 pl.xlabel('Time (s)')
 pl.ylabel('Height (m)')
-pl.show()
+#pl.show()
 
-# plot graph of velocity vs. time
+#plot graph of velocity vs. time
 pl.figure(6)
 pl.plot(t_points, velocity_points, label = 'velocity')
 pl.legend(loc=1)
 pl.title('[Thrust + Gravity + Air Resistance] Velocity vs. Time of Rocket')
 pl.xlabel('Time (s)')
 pl.ylabel('Velocity (m/s)')
-pl.show()
+#pl.show()
 
-# print the max height
-print np.max(height_points)
 
 
 
@@ -297,10 +300,9 @@ for i in range(10):
 '''
 
 
-'''
 #----------------------------- Part 4: VPython -----------------------------------------------------------------------------------------------------------------------------------------------------------
 # Create an animation for the launched rocket reaching the ISS 
-scene1 = vis.display (title = 'Animation of Launched Rocket to the ISS')
+scene1 = vis.display (title = 'Animation of Launched Rocket to the ISS (payload = 0)')
 
 # create three objects: Earth, the International Space Station, and the rocket.
 Earth = vis.sphere(pos=[0,-250,0], radius = 50, color=vis.color.green)
@@ -311,5 +313,7 @@ rocket = vis.cone(pos=[0, -200, 0], axis = (0, 10, 0), radius = 2, color=vis.col
 for item in height_points:
     vis.rate (500)
     rocket.pos.y = (item/1000) - 200
+    if rocket.pos.y >= 160:
+        break
+    
 
-'''
